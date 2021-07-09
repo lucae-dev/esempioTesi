@@ -1,8 +1,11 @@
 package com.example.esempio.Articolo;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,17 +19,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.esempio.User.MyUserDetails;
+import com.example.esempio.User.Utente;
+import com.example.esempio.User.UtenteDetailServiceimpl;
+import com.example.esempio.User.UtenteRepository;
+
 @RestController
 @RequestMapping(value="/articoloRest")
 public class ArticoloController {
 
 	private ArticoloService AS;
+	private  UtenteDetailServiceimpl US;
+	private UtenteRepository UR;
 	
 	@Autowired
-	public ArticoloController(ArticoloService articoloservice)
+	public ArticoloController(ArticoloService articoloservice, UtenteDetailServiceimpl us, UtenteRepository ur)
 	{
 		super();
 		this.AS=articoloservice;
+		this.US=us;
+		this.UR=ur;
 	}
 	
 	@PostMapping(value="/add")
@@ -57,6 +69,30 @@ public class ArticoloController {
 	public void deleteArticolo(@PathVariable Integer cod)
 	{
 		AS.deleteArticoloByCodice(cod);
+	}
+	
+	
+	
+	@GetMapping(value="/testu")
+	public void speriamo()
+	{
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		String passw="esempiotesi";
+		String enpass= encoder.encode(passw);
+		
+		System.out.println(enpass) ;
+		
+		UserDetails ut =  US.loadUserByUsername("Luca");
+		
+		Optional<Utente> sp = UR.findUtenteByUsername("Luca");
+		
+		
+		
+		System.out.println( sp.get().getPassword());
+		System.out.println(ut.getUsername());
+		
+		System.out.println( encoder.matches(passw, sp.get().getPassword()));
+	
 	}
 	
 }

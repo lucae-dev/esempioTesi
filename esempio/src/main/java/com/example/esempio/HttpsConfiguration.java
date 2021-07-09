@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-public class HtppsConfiguration {
+public class HttpsConfiguration {
 	   @Bean
 	    public ServletWebServerFactory servletContainer() {
 	        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
